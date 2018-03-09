@@ -66,6 +66,9 @@ conv_rslt_1 = relu(conv_rslt_1);
 load('Params\fire2_expand3x3_w.mat');
 load('Params\fire2_expand3x3_b.mat');
 conv_rslt_2 = conv(conv_rslt, weights, bias, 3, 1, 1, 1);
+mtmd = conv_winograd(conv_rslt, weights, bias, 3, 1, 1);
+diff = abs(mtmd(:, :, :) - conv_rslt_2(:, :, :));
+plot(diff(:))
 conv_rslt_2 = relu(conv_rslt_2);
 conv_rslt = zeros (55, 55, 128);
 conv_rslt (:, :, 1:64) = conv_rslt_1;
