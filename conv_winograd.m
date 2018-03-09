@@ -14,6 +14,15 @@ top=zeros(Wout,Hout,M);
 m = 2;
 r = 3;
 alpha = m + r - 1;
+UU = zeros(alpha, alpha, N, M);
+for m = 1:M
+    for n = 1:N
+        g = weight(:, :, n, m);
+        U = G * g * G';
+        UU(:, :, n, m) = U;
+    end
+end
+
 for w = 1:2:(Win + 2 * pad - alpha + 1 + even_pad)%(Wout - alpha) + 3
     for h = 1:2:(Hin + 2 * pad - alpha + 1 + even_pad)%(Hout - alpha) + 3
         for m = 1:M
@@ -25,9 +34,7 @@ for w = 1:2:(Win + 2 * pad - alpha + 1 + even_pad)%(Wout - alpha) + 3
             for n = 1:N
                 d = bottomPadded(wStart:wEnd, hStart:hEnd, n);
                 V = B' * d * B;
-                g = weight(:, :, n, m);
-                U = G * g * G';
-                par = par + (U .* V);
+                par = par + (UU(:, :, n, m) .* V);
             end
             par = A' * par * A;
             top(w:w + 1, h:h + 1, m) = par;
